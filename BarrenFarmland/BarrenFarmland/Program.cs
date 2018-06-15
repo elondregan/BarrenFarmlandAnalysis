@@ -11,13 +11,7 @@ namespace BarrenFarmland
     {
         static void Main(string[] args)
         {
-            Coordinate testCoordinate = new Coordinate(0, 9);
-
-            Coordinate testCoordinateTwo = new Coordinate(9, 0);
-
-            Region testRegion = new Region(testCoordinate, testCoordinateTwo);
-            PrintRegionCornerCoordinates(testRegion);
-            Console.ReadLine();
+            Grid theFarm = new Grid(400, 600);
         }
 
         public static void PrintRegionCornerCoordinates(Region regionToPrint)

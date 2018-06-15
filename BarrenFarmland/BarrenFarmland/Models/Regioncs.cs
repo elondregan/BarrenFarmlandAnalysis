@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BarrenFarmland.Models
 {
-    class Region
+    public class Region
     {
         //Remember, all Coordinates are being placed in Q3 on the Real plane.
         public Coordinate BottomLeftCorner { get; private set; }
@@ -16,6 +16,10 @@ namespace BarrenFarmland.Models
 
         public Region(Coordinate BottomLeftCorner, Coordinate TopRightCorner)
         {
+            if(BottomLeftCorner.YValue < TopRightCorner.YValue || TopRightCorner.XValue < BottomLeftCorner.XValue)
+            {
+                throw new ArgumentOutOfRangeException("The selected points cannot form a rectangle, first value represents the bottom left corner and the second is the top right.");
+            }
             this.BottomLeftCorner = BottomLeftCorner;
             this.BottomRightCorner = new Coordinate(BottomLeftCorner.YValue, TopRightCorner.XValue);
             this.TopRightCorner = TopRightCorner;

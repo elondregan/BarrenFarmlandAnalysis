@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BarrenFarmland.Models
 {
 
-    class Coordinate
+    public class Coordinate
     {
         public int XValue { get; private set; }
         public int YValue { get; private set; }
