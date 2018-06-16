@@ -32,6 +32,15 @@ namespace BarrenFarmlandTests
         }
 
         [Test]
+        public void AllBoundaryPointsRegionAreaTest()
+        {
+            Region SizeTwoByTwoRegion = new Region(new Coordinate(0, 1), new Coordinate(1, 0));
+            int ExpectedAreaOfFour = SizeTwoByTwoRegion.CalculateArea();
+
+            Assert.IsTrue(ExpectedAreaOfFour == 4);
+        }
+
+        [Test]
         public void InvalidAreaDefintion()
         {
             Coordinate SizeTenAreaBottomLeft = new Coordinate(0, 9);

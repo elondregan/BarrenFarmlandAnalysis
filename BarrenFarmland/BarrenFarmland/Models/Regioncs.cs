@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BarrenFarmland.Models
 {
@@ -21,7 +17,7 @@ namespace BarrenFarmland.Models
                 throw new ArgumentOutOfRangeException("The selected points cannot form a rectangle, first value represents the bottom left corner and the second is the top right.");
             }
             this.BottomLeftCorner = BottomLeftCorner;
-            this.BottomRightCorner = new Coordinate(BottomLeftCorner.YValue, TopRightCorner.XValue);
+            this.BottomRightCorner = new Coordinate(TopRightCorner.XValue, BottomLeftCorner.YValue);
             this.TopRightCorner = TopRightCorner;
             this.TopLeftCorner = new Coordinate(BottomLeftCorner.XValue, TopRightCorner.YValue);
         }

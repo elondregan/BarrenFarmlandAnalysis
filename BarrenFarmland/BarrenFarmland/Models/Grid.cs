@@ -12,8 +12,13 @@ namespace BarrenFarmland.Models
         public int[,] GridRepresentation;
         public readonly int Width;
         public readonly int Length;
+        public readonly int Barren = -1;
+        public readonly int Unvisited = 0;
+        public readonly int Queued = 1;
+        public readonly int Processed = 2;
 
-        public Grid(int Width, int Length)
+        //X Value corresponds to Length, Y Value to Width
+        public Grid(int Length, int Width)
         {
             this.Width = Width - 1;
             this.Length = Length - 1;
@@ -32,9 +37,10 @@ namespace BarrenFarmland.Models
                 {
                     throw new ArgumentOutOfRangeException();
                 }
-                for (int x = regionToColor.BottomLeftCorner.XValue; x <= regionToColor.BottomRightCorner.XValue; x++)
+                //Y iterates since we are populating ROWS first, and we are comparing them to x values at a time.
+                for (int y = regionToColor.TopLeftCorner.XValue; y <= regionToColor.TopRightCorner.XValue; y++)
                 {
-                    for (int y = regionToColor.TopLeftCorner.YValue; y <= regionToColor.BottomLeftCorner.YValue; y++)
+                    for (int x = regionToColor.TopLeftCorner.YValue; x <= regionToColor.BottomLeftCorner.YValue; x++)
                     {
                         GridRepresentation[x, y] = Color;
                     }
@@ -48,11 +54,100 @@ namespace BarrenFarmland.Models
             }
         }
 
+        public List<int> FindConnectedNodes()
+        {
+            List<int> connectedRegions = new List<int>();
+            for(int x = 0; x <= Width; x++)
+            {
+                for(int y = 0; y <= Length; y++)
+                {
+                    Coordinate currentGridPoint = new Coordinate(x, y);
+                    if (GetGridValue(currentGridPoint) == Barren || GetGridValue(currentGridPoint) == Processed)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        int area = 0;
 
+                        List<Coordinate> unprocessedNeighbors;
+                        Queue<Coordinate> CoordinateBuffer = new Queue<Coordinate>();
+                        CoordinateBuffer.Enqueue(currentGridPoint);
 
-        //public void GridRepresentation()
-        //{
+                        while(CoordinateBuffer.Count > 0)
+                        {
+                            currentGridPoint = CoordinateBuffer.Dequeue();
+                            SetGridValue(currentGridPoint, Processed);
+                            unprocessedNeighbors = FindUnvisitedNeighbors(currentGridPoint);
+                            MarkQueuedPoints(unprocessedNeighbors);
+                            EnqueueEnumerable<Coordinate>(ref CoordinateBuffer, unprocessedNeighbors);
+                            area++;
+                        }
 
-        //}
+                        connectedRegions.Add(area);
+                    }
+                }
+            }
+            //Still need to sort this.
+            return connectedRegions;
+        }
+
+        public List<Coordinate> FindUnvisitedNeighbors(Coordinate gridPoint)
+        {
+            List<Coordinate> neighboringCoordinates = new List<Coordinate>();
+
+            if(gridPoint.XValue > 0)
+            {
+                Coordinate WestNeighbor = new Coordinate(gridPoint.XValue - 1, gridPoint.YValue);
+                neighboringCoordinates.Add(WestNeighbor);
+            }
+
+            if(gridPoint.YValue > 0)
+            {
+                Coordinate NorthNeighbor = new Coordinate(gridPoint.XValue, gridPoint.YValue - 1);
+                neighboringCoordinates.Add(NorthNeighbor);
+            }
+
+            if(gridPoint.XValue < Width)
+            {
+                Coordinate EastNeighbor = new Coordinate(gridPoint.XValue + 1, gridPoint.YValue);
+                neighboringCoordinates.Add(EastNeighbor);
+            }
+
+            if(gridPoint.YValue < Length)
+            {
+                Coordinate SouthNeighbor = new Coordinate(gridPoint.XValue, gridPoint.YValue + 1);
+                neighboringCoordinates.Add(SouthNeighbor);
+            }
+
+            return neighboringCoordinates.Where(point => GetGridValue(point) == Unvisited).ToList<Coordinate>();
+        }
+
+        public void MarkQueuedPoints(List<Coordinate> pointsToSetQueued)
+        {
+            foreach (Coordinate queuedPoint in pointsToSetQueued)
+            {
+                SetGridValue(queuedPoint, Queued);
+            }
+        }
+
+        public void EnqueueEnumerable<T>(ref Queue<T> Queue, IEnumerable<T> ToQueue)
+        {
+            foreach(T element in ToQueue)
+            {
+                Queue.Enqueue(element);
+            }
+        }
+
+        public int GetGridValue(Coordinate gridCoordinate)
+        {
+            return GridRepresentation[gridCoordinate.XValue, gridCoordinate.YValue];
+        }
+
+        public void SetGridValue(Coordinate gridCoordinate, int Value)
+        {
+            GridRepresentation[gridCoordinate.XValue, gridCoordinate.YValue] = Value;
+        }
+
     }
 }
