@@ -9,8 +9,9 @@ namespace BarrenFarmland.Models
         public Coordinate BottomRightCorner { get; private set; }
         public Coordinate TopRightCorner { get; private set; }
         public Coordinate TopLeftCorner { get; private set; }
+        public int Color { get; private set; }
 
-        public Region(Coordinate BottomLeftCorner, Coordinate TopRightCorner)
+        public Region(Coordinate BottomLeftCorner, Coordinate TopRightCorner,int Color)
         {
             if(BottomLeftCorner.YValue < TopRightCorner.YValue || TopRightCorner.XValue < BottomLeftCorner.XValue)
             {
@@ -20,6 +21,7 @@ namespace BarrenFarmland.Models
             this.BottomRightCorner = new Coordinate(TopRightCorner.XValue, BottomLeftCorner.YValue);
             this.TopRightCorner = TopRightCorner;
             this.TopLeftCorner = new Coordinate(BottomLeftCorner.XValue, TopRightCorner.YValue);
+            this.Color = Color;
         }
 
         public int CalculateArea()

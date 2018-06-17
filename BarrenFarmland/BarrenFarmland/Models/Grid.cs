@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BarrenFarmland.Models
 {
-    //TODO: Time permiting, we should look into the possibility of turning everything into a quad tree.
+    //TODO: Time permiting, we should look into the possibility of turning the grid into a quad tree for log(# of Rectangles) lookups as an alternate solution.
     public class Grid
     {
         public int[,] GridRepresentation;
@@ -29,7 +27,7 @@ namespace BarrenFarmland.Models
             GridRepresentation = new int[Width, Length];
         }
 
-        public bool ColorRegion(Region regionToColor, int Color)
+        public bool ColorRegion(Region regionToColor)
         {
             try
             {
@@ -42,7 +40,7 @@ namespace BarrenFarmland.Models
                 {
                     for (int x = regionToColor.TopLeftCorner.YValue; x <= regionToColor.BottomLeftCorner.YValue; x++)
                     {
-                        GridRepresentation[x, y] = Color;
+                        GridRepresentation[x, y] = regionToColor.Color;
                     }
                 }
                 return true;
@@ -56,7 +54,10 @@ namespace BarrenFarmland.Models
 
         public List<int> FindConnectedNodes()
         {
+            //Need to force this to pass by value, otherwise changes made to representation affect gridClone as well.
+            int[,] gridClone = (int[,])this.GridRepresentation.Clone();
             List<int> connectedRegions = new List<int>();
+
             for(int x = 0; x <= Width; x++)
             {
                 for(int y = 0; y <= Length; y++)
@@ -88,7 +89,11 @@ namespace BarrenFarmland.Models
                     }
                 }
             }
-            //Still need to sort this.
+
+            //Using LINQ to sort the connected Regions we have input.
+            connectedRegions = connectedRegions.OrderBy(ProcessedRegion => ProcessedRegion).ToList<int>();
+            //This is done so we don't have to reset the grid everytime we want to find connected nodes.
+            GridRepresentation = gridClone;
             return connectedRegions;
         }
 

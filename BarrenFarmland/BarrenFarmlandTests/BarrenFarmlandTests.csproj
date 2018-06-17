@@ -47,9 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FarmlandTestcases.cs" />
-    <Compile Include="GridTests.cs" />
-    <Compile Include="RegionTests.cs" />
+    <Compile Include="ModelTestCases\FarmlandTestcases.cs" />
+    <Compile Include="ModelTestCases\GridTests.cs" />
+    <Compile Include="ModelTestCases\RegionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

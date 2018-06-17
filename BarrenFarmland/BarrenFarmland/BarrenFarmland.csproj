@@ -47,7 +47,7 @@
     <Compile Include="Models\Coordinate.cs" />
     <Compile Include="Models\Grid.cs" />
     <Compile Include="Models\Regioncs.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="BarrenLandAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
