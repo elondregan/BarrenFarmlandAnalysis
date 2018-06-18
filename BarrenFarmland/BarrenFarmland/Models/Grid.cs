@@ -10,10 +10,11 @@ namespace BarrenFarmland.Models
         public int[,] GridRepresentation;
         public readonly int Width;
         public readonly int Length;
-        public readonly int Barren = -1;
-        public readonly int Unvisited = 0;
-        public readonly int Queued = 1;
-        public readonly int Processed = 2;
+
+        private const int Barren = -1;
+        private const int Unvisited = 0;
+        private const int Queued = 1;
+        private const int Processed = 2;
 
         //X Value corresponds to Length, Y Value to Width
         public Grid(int Length, int Width)
@@ -27,11 +28,20 @@ namespace BarrenFarmland.Models
             GridRepresentation = new int[Width, Length];
         }
 
+        /// <summary>
+        /// This is a source of some nasty overhead when dealing with large rectangles. Operation is O(w * l) 
+        /// </summary>
+        /// <param name="regionToColor"></param>
+        /// <returns>Whether is succesfully colored the region, if it fails then it will spit out a message claiming the region is out of bounds.</returns>
         public bool ColorRegion(Region regionToColor)
         {
             try
             {
                 if (regionToColor.BottomLeftCorner.YValue > Width || regionToColor.TopRightCorner.XValue > Length)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+                else if(regionToColor.BottomLeftCorner.XValue < 0 || regionToColor.BottomLeftCorner.YValue < 0 || regionToColor.TopRightCorner.XValue < 0 || regionToColor.TopRightCorner.YValue < 0)
                 {
                     throw new ArgumentOutOfRangeException();
                 }
@@ -52,6 +62,11 @@ namespace BarrenFarmland.Models
             }
         }
 
+
+        /// <summary>
+        /// This is performing the majority of the work, this has an overhead of O(W * L) with W and L representing Grid length and width
+        /// </summary>
+        /// <returns>The areas of the non barren sections in ascending order</returns>
         public List<int> FindConnectedNodes()
         {
             //Need to force this to pass by value, otherwise changes made to representation affect gridClone as well.
@@ -94,9 +109,20 @@ namespace BarrenFarmland.Models
             connectedRegions = connectedRegions.OrderBy(ProcessedRegion => ProcessedRegion).ToList<int>();
             //This is done so we don't have to reset the grid everytime we want to find connected nodes.
             GridRepresentation = gridClone;
+
+            //in case our grid is entirely barren
+            if(connectedRegions.Count == 0)
+            {
+                connectedRegions.Add(0);
+            }
             return connectedRegions;
         }
 
+        /// <summary>
+        /// Makes a list holding neighbors in the format of E N W S.
+        /// </summary>
+        /// <param name="gridPoint"></param>
+        /// <returns></returns>
         public List<Coordinate> FindUnvisitedNeighbors(Coordinate gridPoint)
         {
             List<Coordinate> neighboringCoordinates = new List<Coordinate>();
@@ -136,6 +162,12 @@ namespace BarrenFarmland.Models
             }
         }
 
+        /// <summary>
+        /// Oddly enough this is not built in so I made a new generic method.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="Queue"></param>
+        /// <param name="ToQueue"></param>
         public void EnqueueEnumerable<T>(ref Queue<T> Queue, IEnumerable<T> ToQueue)
         {
             foreach(T element in ToQueue)

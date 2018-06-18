@@ -18,11 +18,11 @@ namespace BarrenFarmlandTests
         [Test]
         public void FullyBarrenRectangleTest()
         {
-            Grid ThreeByFour = new Grid(400, 600);
-            Region TheGrid = new Region(new Coordinate(0, ThreeByFour.Width), new Coordinate(ThreeByFour.Length, 0), Barren);
-            ThreeByFour.ColorRegion(TheGrid);
-            List<int> area = ThreeByFour.FindConnectedNodes();
-            Assert.True(ThreeByFour.FindConnectedNodes().Count == 0);
+            Grid Farmland = new Grid(400, 600);
+            Region TheGrid = new Region(new Coordinate(0, Farmland.Width), new Coordinate(Farmland.Length, 0), Barren);
+            Farmland.ColorRegion(TheGrid);
+            List<int> area = Farmland.FindConnectedNodes();
+            Assert.True(Farmland.FindConnectedNodes().Count == 1 && area.Contains(0));
         }
 
         /// <summary>
